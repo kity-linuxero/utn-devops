@@ -26,6 +26,14 @@ git clone https://github.com/kity-linuxero/devops-web-actividad1.git
 # Directorio que contiene el Vagrantfile para aprovisionamiento
 git clone https://github.com/kity-linuxero/utn-devops.git
 ```
+Si no se tiene git instalado, puede descargarlos desde:
+
+- [SitioWeb](https://github.com/kity-linuxero/devops-web-actividad1/archive/refs/heads/main.zip)
+- [utp-devops repo](https://github.com/kity-linuxero/utn-devops/archive/refs/heads/main.zip)
+
+> [!IMPORTANT]  
+> Si ha optado por descargar desde la URL a los repositorio debe primero descomprimir los archivos.
+
 
 
 #### 3) Cambiar al branch correspondiente:
