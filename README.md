@@ -47,7 +47,7 @@ vagrant up
 
 #### 6) Abrir el navegador para verificar
 
-- Abrir [localhost](http://localhost)
+- Abrir [localhost:8080](http://localhost:8080)
 - Si todo va bien debería verse así:
 
 ![](./img/web_sreenshot.png)
