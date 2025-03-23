@@ -34,33 +34,55 @@ Si no se tiene git instalado, puede descargarlos desde:
 > [!IMPORTANT]  
 > Si ha optado por descargar desde la URL a los repositorio debe primero descomprimir los archivos.
 
+La estructura de directorios debe quedar de la siguiente manera:
+
+```
+grupo1-devops/
+├─ devops-web-actividad1/
+│  ├─ index.html
+├─ utn-devops/
+│  ├─ nginx-config/
+│  │  ├─ nginx-default
+│  ├─ Vagrantfile
+```
 
 
-#### 3) Cambiar al branch correspondiente:
+
+#### 3) Cambiar de directorio 
 ```bash
 cd utn-devops
+```
+
+#### 4) Cambiar al branch correspondiente
+```bash
 git switch unidad-1-vagrant
 ```
 
 
-#### 4) Ejecutar el siguiente comando para aprovisionar la VM con Vagrant:
+#### 5) Ejecutar el siguiente comando para aprovisionar la VM con Vagrant:
 
 ```bash
 vagrant up
 ```
 
-#### 5) Una vez finalizado el comando, abrimos VirtualBox y debería verse así
+#### 6) Una vez finalizado el comando, abrimos VirtualBox y debería verse así
 
 ![](./img/virtualbox.png)
 
-#### 6) Abrir el navegador para verificar
+#### 7) Abrir el navegador para verificar
 
 - Abrir [localhost:8080](http://localhost:8080)
 - Si todo va bien debería verse así:
 
 ![](./img/web_sreenshot.png)
 
-#### 7) Detener VM mediante comandos de Vagrant
+Si algo no funciona, puede intentar con
+
+```bash
+vagrant reload
+```
+
+#### 8) Detener VM mediante comandos de Vagrant
 
 ```bash
 vagrant halt
