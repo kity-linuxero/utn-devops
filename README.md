@@ -34,6 +34,17 @@ Si no se tiene git instalado, puede descargarlos desde:
 > [!IMPORTANT]  
 > Si ha optado por descargar desde la URL a los repositorio debe primero descomprimir los archivos.
 
+
+#### 3) Cambiar de directorio 
+```bash
+cd utn-devops
+```
+
+#### 4) Cambiar al branch correspondiente
+```bash
+git switch unidad-1-vagrant
+```
+
 La estructura de directorios debe quedar de la siguiente manera:
 
 ```
@@ -44,18 +55,6 @@ grupo1-devops/
 │  ├─ nginx-config/
 │  │  ├─ nginx-default
 │  ├─ Vagrantfile
-```
-
-
-
-#### 3) Cambiar de directorio 
-```bash
-cd utn-devops
-```
-
-#### 4) Cambiar al branch correspondiente
-```bash
-git switch unidad-1-vagrant
 ```
 
 
