@@ -74,27 +74,13 @@ Vagrant.configure("2") do |config|
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
 
-  # Esto es el aprovisionamiento de la actividad práctica 1.
-#   config.vm.provision "shell", inline: <<-SHELL
-#     apt-get update
-#     apt-get install -y nginx
-
-#     # Cambiar root de nginx a /vagrant
-#     sed -i 's|root /var/www/html;|root /vagrant;|g' /etc/nginx/sites-available/default
-
-#     # Asegurar que el index esté habilitado (opcional)
-#     sed -i 's|index index.html index.htm index.nginx-debian.html;|index index.html;|g' /etc/nginx/sites-available/default
-
-#     # Reiniciar nginx para aplicar cambios
-#     systemctl restart nginx
-    
-#   SHELL
-# end
-
 # Aprovisionamiento para la instalación de Docker
 # Fuentes: https://docs.docker.com/engine/install/ubuntu/
 
   config.vm.provision "shell", inline: <<-SHELL
+
+    # Desinstalar el software instalado de la práctica anterior
+    sudo apt purge -y nginx
    
     # Run the following command to uninstall all conflicting packages:
     for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
