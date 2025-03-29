@@ -1,10 +1,10 @@
-# utn-devops
-grupo1-repo-devops
+# utn-devops - Grupo 1
 
-Repositorio de aplicación: [aquí](https://github.com/kity-linuxero/devops-web-actividad1).
+
 
 > [!NOTE]  
-> La aplicación para la actividad práctica N2, se ha optado por la **práctica exploratoria**. Es una aplicación escrita en NodeJS con una base de datos en PosgreSQL. La aplicación lee desde la base de datos el nombre de los integrantes del grupo. La aplicación y la base de datos corren sobre docker en contenedores separados.
+> La aplicación para la actividad práctica N2, se ha optado por la **práctica exploratoria**. Es una aplicación escrita en NodeJS con una base de datos en PosgreSQL. La aplicación lee desde la base de datos el nombre de los integrantes del grupo. La aplicación y la base de datos corren sobre docker en contenedores separados. Puede consultar el repo de la aplicación para la actividad 2 [aquí](https://github.com/kity-linuxero/devops-web-actividad1/tree/node-version-db).
+
 
 
 
@@ -25,10 +25,10 @@ cd grupo1-devops
 ### 2) Descargar los repositorios:
 
 ```bash
-# Directorio que contiene la aplicación
+# Repositorio que contiene el código fuente de la aplicación
 git clone https://github.com/kity-linuxero/devops-web-actividad1.git
 
-# Directorio que contiene el Vagrantfile para aprovisionamiento
+# Repositorio que contiene script de aprovisionamiento
 git clone https://github.com/kity-linuxero/utn-devops.git
 ```
 
@@ -37,17 +37,13 @@ git clone https://github.com/kity-linuxero/utn-devops.git
 cd utn-devops
 ```
 
-### 4) Cambiar al branch correspondiente
+### 4) Cambiar al branch correspondiente*
 
-#### Para la actividad 1:
-  ```bash
-  git switch unidad-1-vagrant
-  ```
+```bash
+git switch unidad-2-docker
+```
 
-#### Para la actividad práctica 2:
-  ```bash
-  git switch unidad-2-docker
-  ```
+* El código fuente de la aplicación se encuentra en el branch `node-version-db` pero el script de aprovisionamiento lo cambia automáticamente.
 
 La estructura de directorios debe quedar de la siguiente manera:
 
@@ -71,7 +67,7 @@ vagrant up
 
 ![](./img/virtualbox.png)
 
-### 7) Verificar que los contenedores estén corriendo (Solo actividad práctica 2):
+### 7) Verificar que los contenedores estén corriendo
 
 ```bash
 vagrant ssh -c "sudo docker ps"
