@@ -11,7 +11,7 @@ Repositorio de aplicación: [aquí](https://github.com/kity-linuxero/devops-web-
 ## Requerimientos
 - [Vagrant](https://developer.hashicorp.com/vagrant/install?product_intent=vagrant)
 - [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
-- [Git](https://git-scm.com/downloads) (opcional)
+- [Git](https://git-scm.com/downloads)
 
 ## Instrucciones
 
@@ -31,14 +31,6 @@ git clone https://github.com/kity-linuxero/devops-web-actividad1.git
 # Directorio que contiene el Vagrantfile para aprovisionamiento
 git clone https://github.com/kity-linuxero/utn-devops.git
 ```
-Si no se tiene git instalado, puede descargarlos desde:
-
-- [SitioWeb](https://github.com/kity-linuxero/devops-web-actividad1/archive/refs/heads/main.zip)
-- [utp-devops repo](https://github.com/kity-linuxero/utn-devops/archive/refs/heads/main.zip)
-
-> [!IMPORTANT]  
-> Si ha optado por descargar desde la URL a los repositorio debe primero descomprimir los archivos.
-
 
 ### 3) Cambiar de directorio 
 ```bash
@@ -48,24 +40,23 @@ cd utn-devops
 ### 4) Cambiar al branch correspondiente
 
 #### Para la actividad 1:
-```bash
-git switch unidad-1-vagrant
-```
+  ```bash
+  git switch unidad-1-vagrant
+  ```
 
 #### Para la actividad práctica 2:
-```bash
-git switch unidad-2-docker
-```
+  ```bash
+  git switch unidad-2-docker
+  ```
 
 La estructura de directorios debe quedar de la siguiente manera:
 
 ```
 grupo1-devops/
 ├─ devops-web-actividad1/
-│  ├─ index.html
+│  ├─ files and directories...
 ├─ utn-devops/
-│  ├─ nginx-config/
-│  │  ├─ nginx-default
+│  ├─ files and directories...
 │  ├─ Vagrantfile
 ```
 
@@ -80,7 +71,7 @@ vagrant up
 
 ![](./img/virtualbox.png)
 
-### 7) Verificar que los contenedores estén corriendo:
+### 7) Verificar que los contenedores estén corriendo (Solo actividad práctica 2):
 
 ```bash
 vagrant ssh -c "sudo docker ps"
@@ -106,6 +97,12 @@ Si algo no funciona, puede intentar con
 
 ```bash
 vagrant reload
+```
+
+Si se hacen cambios en el `Vagrantfile` debe intentar:
+
+```bash
+vagrant reload --provision
 ```
 
 ### 9) Detener VM mediante comandos de Vagrant
