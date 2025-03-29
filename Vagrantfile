@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -43,6 +43,9 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
+
+  # IMPORTANTE!
+  # Debe existir el directorio de la aplicación
   config.vm.synced_folder "../devops-web-actividad1", "/vagrant"
 
   # Disable the default share of the current code directory. Doing this
@@ -70,18 +73,64 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get install -y nginx
 
-    # Cambiar root de nginx a /vagrant
-    sed -i 's|root /var/www/html;|root /vagrant;|g' /etc/nginx/sites-available/default
+  # Esto es el aprovisionamiento de la actividad práctica 1.
+#   config.vm.provision "shell", inline: <<-SHELL
+#     apt-get update
+#     apt-get install -y nginx
 
-    # Asegurar que el index esté habilitado (opcional)
-    sed -i 's|index index.html index.htm index.nginx-debian.html;|index index.html;|g' /etc/nginx/sites-available/default
+#     # Cambiar root de nginx a /vagrant
+#     sed -i 's|root /var/www/html;|root /vagrant;|g' /etc/nginx/sites-available/default
 
-    # Reiniciar nginx para aplicar cambios
-    systemctl restart nginx
+#     # Asegurar que el index esté habilitado (opcional)
+#     sed -i 's|index index.html index.htm index.nginx-debian.html;|index index.html;|g' /etc/nginx/sites-available/default
+
+#     # Reiniciar nginx para aplicar cambios
+#     systemctl restart nginx
     
+#   SHELL
+# end
+
+# Aprovisionamiento para la instalación de Docker
+# Fuentes: https://docs.docker.com/engine/install/ubuntu/
+
+  config.vm.provision "shell", inline: <<-SHELL
+   
+    # Run the following command to uninstall all conflicting packages:
+    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+
+    # Install using de apt repository
+
+    # Add Docker's official GPG key:
+    apt-get update
+    apt-get install -y ca-certificates curl
+    install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+    
+    tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    apt-get update
+
+    # Install latest version
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    # Docker installed
+
+    # Instalar git
+    apt install -y git
+
+    # Preparar aplicacion
+    cd /vagrant
+    git switch node-version-db
+
+    # Levantar aplicación mediante docker compose
+    docker compose up --build -d
+
   SHELL
 end
