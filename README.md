@@ -22,12 +22,9 @@ mkdir grupo1-devops
 cd grupo1-devops
 ```
 
-### 2) Descargar los repositorios:
+### 2) Descargar el repositorio de aprovisionamiento:
 
 ```bash
-# Repositorio que contiene el código fuente de la aplicación
-git clone https://github.com/kity-linuxero/devops-web-actividad1.git
-
 # Repositorio que contiene script de aprovisionamiento
 git clone https://github.com/kity-linuxero/utn-devops.git
 ```
@@ -43,14 +40,10 @@ cd utn-devops
 git switch unidad-2-docker
 ```
 
-* El código fuente de la aplicación se encuentra en el branch `node-version-db` pero el script de aprovisionamiento lo cambia automáticamente.
-
 La estructura de directorios debe quedar de la siguiente manera:
 
 ```
 grupo1-devops/
-├─ devops-web-actividad1/
-│  ├─ files and directories...
 ├─ utn-devops/
 │  ├─ files and directories...
 │  ├─ Vagrantfile

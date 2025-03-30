@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
 
   # IMPORTANTE!
   # Debe existir el directorio de la aplicación
-  config.vm.synced_folder "../devops-web-actividad1", "/vagrant"
+  #config.vm.synced_folder "../devops-web-actividad1", "/vagrant"
 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
@@ -113,6 +113,8 @@ Vagrant.configure("2") do |config|
 
     # Preparar aplicacion
     cd /vagrant
+    git clone https://github.com/kity-linuxero/devops-web-actividad1.git app
+    cd app
     git switch node-version-db
 
     # Levantar aplicación mediante docker compose
