@@ -1,124 +1,53 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
   config.vm.box = "ubuntu/jammy64"
 
-  # Disable automatic box update checking. If you disable this, then
-  # boxes will only be checked for updates when the user runs
-  # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
-
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # NOTE: This will enable public access to the opened port
   config.vm.network "forwarded_port", guest: 8080, host: 8080
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine and only allow access
-  # via 127.0.0.1 to disable public access
-  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+  # Puerto Jenkins
+  config.vm.network "forwarded_port", guest: 8082, host: 8082, auto_correct: true
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  # Puerto en que escuchar el servidor maestro de Puppet
+  config.vm.network "forwarded_port", guest: 8140, host: 8140, auto_correct: true
+  
+  #Permite descargas con certificados vencidos o por http
+  config.vm.box_download_insecure = true
 
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
+  # configuración del nombre de maquina
+  config.vm.hostname = "utn-devops.localhost"
+  config.vm.boot_timeout = 3600
 
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
-
-  # IMPORTANTE!
-  # Debe existir el directorio de la aplicación
-  #config.vm.synced_folder "../devops-web-actividad1", "/vagrant"
-
-  # Disable the default share of the current code directory. Doing this
-  # provides improved isolation between the vagrant box and your host
-  # by making sure your Vagrantfile isn't accessible to the vagrant box.
-  # If you use this you may want to enable additional shared subfolders as
-  # shown above.
-  # config.vm.synced_folder ".", "/vagrant", disabled: true
-
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
+  
   config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
+      vb.name = "utn-devops-vagrant-ubuntu"
+
+    # Customize the amount of memory on the VM:
     vb.memory = "1024"
   end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
-  # documentation for more information about their specific syntax and use.
+  # Mapeo de directorios que se comparten entre la maquina virtual y nuestro equipo. En este caso es
+  # el propio directorio donde está el archivo  y el directorio "/vagrant" dentro de la maquina virtual.
+  # config.vm.synced_folder ".", "/vagrant"
 
-# Aprovisionamiento para la instalación de Docker
-# Fuentes: https://docs.docker.com/engine/install/ubuntu/
+  # Con esta sentencia lo que hara Vagrant es copiar el archivo a la máquina Ubuntu.
+  # Además de usarlo como ejemplo para distinguir dos maneras de aprovisionamiento el archivo contiene
+  # una definición del firewall de Ubuntu para permitir el tráfico de red que se redirecciona internamente.
+  config.vm.provision "file", source: "hostConfigs/ufw", destination: "/tmp/utw"
+  config.vm.provision "file", source: "hostConfigs/etc_hosts.txt", destination: "/tmp/etc_hosts.txt"
+  
+  # Archivos de Puppet
+  config.vm.provision "file", source: "hostConfigs/puppet/site.pp", destination: "/tmp/site.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/init.pp", destination: "/tmp/init.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/init_jenkins.pp", destination: "/tmp/init_jenkins.pp"
+  config.vm.provision "file", source: "hostConfigs/puppet/puppet-master.conf", destination: "/tmp/puppet-master.conf"
+  config.vm.provision "file", source: "hostConfigs/puppet/.env", destination: "/tmp/env"
 
-  config.vm.provision "shell", inline: <<-SHELL
-
-    # Desinstalar el software instalado de la práctica anterior
-    sudo apt purge -y nginx
-   
-    # Run the following command to uninstall all conflicting packages:
-    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+  # En este archivo tendremos el provisionamiento de software necesario para nuestra
+  # maquina virtual. Por ejemplo, servidor web, servidor de base de datos, etc.
+  config.vm.provision :shell, path: "Vagrant.bootstrap.sh", run: "always"
 
 
-    # Install using de apt repository
-
-    # Add Docker's official GPG key:
-    apt-get update
-    apt-get install -y ca-certificates curl
-    install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    chmod a+r /etc/apt/keyrings/docker.asc
-
-    # Add the repository to Apt sources:
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-    
-    tee /etc/apt/sources.list.d/docker.list > /dev/null
-    
-    apt-get update
-
-    # Install latest version
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    # Docker installed
-
-    # Instalar git
-    apt install -y git
-
-    # Preparar aplicacion
-    cd /vagrant
-    git clone https://github.com/kity-linuxero/devops-web-actividad1.git app
-    cd app
-    git switch node-version-db
-
-    # Levantar aplicación mediante docker compose
-    docker compose up --build -d
-
-  SHELL
 end

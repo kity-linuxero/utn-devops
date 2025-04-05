@@ -1,11 +1,10 @@
 # utn-devops - Grupo 1
 
 
+## Unidad 3 - Puppets
 
 > [!NOTE]  
-> La aplicación para la actividad práctica N2, se ha optado por la **práctica exploratoria**. Es una aplicación escrita en NodeJS con una base de datos en PosgreSQL. La aplicación lee desde la base de datos el nombre de los integrantes del grupo. La aplicación y la base de datos corren sobre docker en contenedores separados. Puede consultar el repo de la aplicación para la actividad 2 [aquí](https://github.com/kity-linuxero/devops-web-actividad1/tree/node-version-db).
-
-
+> Se ha optado por la práctica detallada con algunas modificaciones.
 
 
 ## Requerimientos
@@ -37,16 +36,7 @@ cd utn-devops
 ### 4) Cambiar al branch correspondiente*
 
 ```bash
-git switch unidad-2-docker
-```
-
-La estructura de directorios debe quedar de la siguiente manera:
-
-```
-grupo1-devops/
-├─ utn-devops/
-│  ├─ files and directories...
-│  ├─ Vagrantfile
+git switch unidad-3-puppet
 ```
 
 
@@ -60,39 +50,99 @@ vagrant up
 
 ![](./img/virtualbox.png)
 
-### 7) Verificar que los contenedores estén corriendo
+
+### 7) Ejecutar comandos.
+
+Una vez terminado la ejecución de comandos `Vagrant` debemos firmar los certificados para que el agente y el master (instalados en el mismo servidor por cuestiones de simplificar la práctica) se puedan comunicar.
+
+Para eso:
 
 ```bash
-vagrant ssh -c "sudo docker ps"
+vagrant ssh
+
+sudo puppet agent -t --debug
 ```
 
-El resultado de la salida debería ser similar a:
+Al final de la ejecución del `debug` nos indicará el siguiente error:
 
 ```bash
-CONTAINER ID   IMAGE              COMMAND                  CREATED          STATUS          PORTS                                         NAMES
-513cc09530da   vagrant-app        "docker-entrypoint.s…"   38 seconds ago   Up 37 seconds   0.0.0.0:8080->3000/tcp, [::]:8080->3000/tcp   grupo1-app
-1ca903a53db3   vagrant-database   "docker-entrypoint.s…"   38 seconds ago   Up 37 seconds   5432/tcp                                      postgres-container
+Error: Could not request certificate: Error 500 on SERVER: Server Error: can't modify frozen String: ""
+Exiting; failed to retrieve certificate and waitforcert is disabled
 ```
 
-### 8) Abrir el navegador para verificar
+Esto es porque aún no están listos los certificados. Ejecutar lo siguiente:
 
-- Abrir [localhost:8080](http://localhost:8080)
+```bash
+sudo puppet cert sign utn-devops.localhost
+# Volver a ejecutar el agent debug
+sudo puppet agent -t --debug
+```
+
+Esta vez debería terminar sin error.
+
+
+### 8) Verificar archivos de Jenkins
+
+Dentro de la máquina virtual ejecutar lo siguiente para verificar que los archivos de Jenkins se hayan copiado:
+
+```bash
+ls -l /etc/puppet/code/environments/production/modules/jenkins/
+
+total 8
+drwxr-xr-x 2 root root 4096 Apr  5 15:10 files
+drwxr-xr-x 2 root root 4096 Apr  5 15:15 manifests
+```
+
+![](./img/puppet_consola.png)
+
+
+### 9) Abrir el navegador y completar la instalación de Jenkins
+
+- Abrir [localhost:8082](http://localhost:8082)
 - Si todo va bien debería verse así:
 
-![](./img/grupo1_actividad2.png)
+![](./img/Jenkins_init.png)
 
 
-Si algo no funciona, puede intentar con
+Ahí nos solicita que peguemos la contraseña de administrador que está en el archivo `/var/lib/jenkins/secrets/initialAdminPassword`
 
-```bash
-vagrant reload
-```
-
-Si se hacen cambios en el `Vagrantfile` debe intentar:
+Podemos obtenerla de la siguiente manera:
 
 ```bash
-vagrant reload --provision
+vagrant ssh -c "sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
 ```
+
+Y estamos desde la VM, simplemente hacer:
+```bash
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+En nuestro caso, la password generada fue: `10e08eef20674a9bacf361dbad21b637`
+
+![](./img/Jenkins_config.png)
+
+Luego, ir a **Install suggested plugins”**.
+
+La instalación llevará un tiempo:
+
+![](./img/Jenkins_plugins_1.png)
+
+Una vez finalizada. Debemos crear el usuario de administrador
+
+![](./img/Jenkins_create_user.png)
+
+Luego, dejamos por defecto la configuración de la instancia de Jenkins.
+
+![](./img/Jenkins_instance_conf.png)
+
+Si todo sale bien, nos indicará que Jenkins está listo
+
+
+![](./img/Jenkins_ready.png)
+
+Una vez, iniciado con las credenciales, podemos ver el Dashboard de Jenkins:
+
+![](./img/Jenkins_Dashboard.png)
 
 ### 9) Detener VM mediante comandos de Vagrant
 
